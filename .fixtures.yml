@@ -1,0 +1,7 @@
+---
+fixtures:
+  forge_modules:
+    singleton: "pdxcat/singleton"
+    stdlib: "puppetlabs/stdlib"
+  symlinks:
+    geoipcheck: "#{source_dir}"
