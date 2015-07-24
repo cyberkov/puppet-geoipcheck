@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "cyberkov",
   "summary": "Restrict ssh logins via geoip",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "source": "https://github.com/cyberkov/puppet-geoipcheck.git",
   "project_page": "https://github.com/cyberkov/puppet-geoipcheck",
   "issues_url": "https://github.com/cyberkov/puppet-geoipcheck/issues",
