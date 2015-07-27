@@ -1,6 +1,6 @@
 {
   "name": "cyberkov-geoipcheck",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "cyberkov",
   "summary": "Restrict ssh logins via geoip",
   "license": "Apache-2.0",
@@ -8,7 +8,9 @@
   "project_page": "https://github.com/cyberkov/puppet-geoipcheck",
   "issues_url": "https://github.com/cyberkov/puppet-geoipcheck/issues",
   "dependencies": [
-    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    }
   ]
 }
-
