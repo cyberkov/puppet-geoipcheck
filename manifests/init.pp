@@ -39,7 +39,7 @@ class geoipcheck {
     ensure => present
   }
 
-  singleton_packages( 'wget' )
+  ensure_packages( 'wget' )
 
   file { 'geoip_dir':
     ensure => directory,
