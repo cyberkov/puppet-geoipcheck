@@ -6,10 +6,9 @@ rvm:
   - 1.8.7
   - 1.9.3
   - 2.0.0
-  - 2.1.6
+  - 2.1.0
   - 2.2.2
 script: bundle exec rake test
-#script: "\"bundle exec rake validate lint spec SPEC_OPTS='--format documentation'\""
 env:
   - PUPPET_VERSION="~> 3.2.0"
   - PUPPET_VERSION="~> 3.3.0"
@@ -31,19 +30,19 @@ matrix:
   # Ruby 1.9.3
   - rvm: 1.9.3
     env: PUPPET_VERSION="~> 2.7.0"
-    
+
   # Ruby 2.0.0
   - rvm: 2.0.0
     env: PUPPET_VERSION="~> 2.7.0"
-    
-  # Ruby 2.1.6
-  - rvm: 2.1.6
+
+  # Ruby 2.1.0
+  - rvm: 2.1.0
     env: PUPPET_VERSION="~> 2.7.0"
-  - rvm: 2.1.6
+  - rvm: 2.1.0
     env: PUPPET_VERSION="~> 3.2.0"
-  - rvm: 2.1.6
+  - rvm: 2.1.0
     env: PUPPET_VERSION="~> 3.3.0"
-  - rvm: 2.1.6
+  - rvm: 2.1.0
     env: PUPPET_VERSION="~> 3.4.0"
 
   # Ruby 2.2.2
