@@ -23,13 +23,16 @@
 #
 class geoipcheck (
   Array $countries = [ 'AT', 'UK' ],
+  Boolean $manage_dependencies = true
 ){
 
   package {['geoip-bin', 'geoip-database']:
     ensure => present
   }
 
-  ensure_packages( 'wget' )
+  if $manage_dependencies {
+    ensure_packages( 'wget' )
+  }
 
   file { 'geoip_dir':
     ensure => directory,
