@@ -1,79 +1,104 @@
 # geoipcheck
 
+[![CI](https://github.com/cyberkov/puppet-geoipcheck/actions/workflows/ci.yml/badge.svg)](https://github.com/cyberkov/puppet-geoipcheck/actions/workflows/ci.yml)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/cyberkov/geoipcheck.svg)](https://forge.puppetlabs.com/cyberkov/geoipcheck)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/cyberkov/geoipcheck.svg)](https://forge.puppetlabs.com/cyberkov/geoipcheck)
+
 #### Table of Contents
 
 1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with geoipcheck](#setup)
+2. [Module Description](#module-description)
+3. [Setup](#setup)
     * [What geoipcheck affects](#what-geoipcheck-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with geoipcheck](#beginning-with-geoipcheck)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+4. [Usage](#usage)
+5. [Reference](#reference)
+6. [Limitations](#limitations)
+7. [Development](#development)
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves.
-This is your 30 second elevator pitch for your module. Consider including
-OS/Puppet version it works with.
+This module restricts SSH logins via GeoIP location checking, allowing access only from specified countries.
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
+The geoipcheck module uses GeoIP databases to determine the geographic location of incoming SSH connections and restricts access based on country codes. It integrates with TCP wrappers (hosts.allow/hosts.deny) to enforce geographic-based access control for SSH services.
 
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+This module:
+* Installs required GeoIP packages and databases
+* Configures scripts to check IP addresses against allowed countries
+* Sets up automatic GeoIP database updates via cron
+* Configures hosts.allow and hosts.deny for SSH access control
 
 ## Setup
 
 ### What geoipcheck affects
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+* Installs packages: `geoip-bin`, `geoip-database`, and optionally `wget`
+* Creates directory: `/usr/local/geoip`
+* Creates scripts: `/usr/local/geoip/check` and `/usr/local/geoip/update`
+* Modifies `/etc/hosts.allow` to add GeoIP check for SSH
+* Modifies `/etc/hosts.deny` to deny all SSH by default
+* Adds monthly cron job for GeoIP database updates
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+This module requires:
+* TCP wrappers support (hosts.allow/hosts.deny)
+* puppetlabs-stdlib module
+* Internet access for GeoIP database updates (unless using local mirrors)
 
 ### Beginning with geoipcheck
 
-The very basic steps needed for a user to get the module up and running.
+To get started with default settings (allowing Austria and United Kingdom):
 
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+```puppet
+include geoipcheck
+```
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+Allow SSH access only from specific countries:
+
+```puppet
+class { 'geoipcheck':
+  countries => ['US', 'CA', 'GB'],
+}
+```
+
+Disable automatic management of wget package (if you manage it elsewhere):
+
+```puppet
+class { 'geoipcheck':
+  countries           => ['DE', 'FR'],
+  manage_dependencies => false,
+}
+```
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
+### Class: geoipcheck
+
+#### Parameters
+
+* `countries`: Array of ISO 3166-1 alpha-2 country codes that should be allowed SSH access. Default: `['AT', 'UK']`
+* `manage_dependencies`: Boolean to control whether to manage the wget package. Default: `true`
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+This module is compatible with:
+* RedHat-based systems (CentOS, RHEL, Oracle Linux, Scientific Linux)
+* Debian-based systems (Debian, Ubuntu)
+* Windows (limited support)
+
+The module requires:
+* Puppet >= 7.0.0
+* TCP wrappers support
+* GeoIP packages available in repositories
+
+**Note**: This module modifies critical security files (hosts.allow, hosts.deny). Ensure you test thoroughly in a non-production environment first to avoid locking yourself out of systems.
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
+This module follows the [Voxpupuli](https://voxpupuli.org) coding standards.

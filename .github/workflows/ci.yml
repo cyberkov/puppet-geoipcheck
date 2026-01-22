@@ -1,0 +1,56 @@
+---
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: 'Unit tests'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - puppet: "~> 7.0"
+            ruby: "2.7"
+          - puppet: "~> 8.0"
+            ruby: "3.2"
+    env:
+      PUPPET_GEM_VERSION: ${{ matrix.puppet }}
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run unit tests
+        run: |
+          bundle exec rake parallel_spec
+
+  static:
+    name: 'Static validations'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+          bundler-cache: true
+      - name: Run static validations
+        run: |
+          bundle exec rake check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint
