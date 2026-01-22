@@ -1,8 +1,22 @@
-# This file can be used to customize the files managed by PDK.
-#
-# See https://github.com/puppetlabs/pdk-templates/blob/main/README.md
-# for more information.
-#
-# See https://github.com/puppetlabs/pdk-templates/blob/main/config_defaults.yml
-# for the default values.
---- {}
+---
+# This file is managed via modulesync and should not be edited manually.
+# See https://github.com/voxpupuli/modulesync_config for details.
+
+.github/workflows/ci.yml:
+  override: true
+.github/workflows/release.yml:
+  override: true
+
+Gemfile:
+  required:
+    ':development':
+      - gem: 'voxpupuli-test'
+        version: '~> 7.0'
+      - gem: 'voxpupuli-acceptance'
+        version: '~> 2.0'
+
+Rakefile:
+  override: false
+
+spec/spec_helper.rb:
+  override: false
