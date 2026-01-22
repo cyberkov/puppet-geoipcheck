@@ -24,7 +24,7 @@
 #   }
 #
 class geoipcheck (
-  Array[String[2,2]] $countries = ['AT', 'UK'],
+  Array[String[2,2]] $countries = ['AT', 'GB'],
   Boolean $manage_dependencies = true,
 ) {
   package { ['geoip-bin', 'geoip-database']:

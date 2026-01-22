@@ -51,7 +51,7 @@ This module requires:
 
 ### Beginning with geoipcheck
 
-To get started with default settings (allowing Austria and UK):
+To get started with default settings (allowing Austria and United Kingdom):
 
 ```puppet
 include geoipcheck
