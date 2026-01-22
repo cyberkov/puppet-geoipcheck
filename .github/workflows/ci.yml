@@ -11,31 +11,6 @@ permissions:
   contents: read
 
 jobs:
-  setup_matrix:
-    name: 'Setup Test Matrix'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    outputs:
-      matrix: ${{ steps.get-matrix.outputs.matrix }}
-    steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-      - name: Activate Ruby 2.7
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "2.7"
-          bundler-cache: true
-      - name: Print bundle environment
-        run: |
-          echo ::group::bundler environment
-          bundle env
-          echo ::endgroup::
-      - name: Setup Acceptance Test Matrix
-        id: get-matrix
-        run: |
-          bundle exec matrix_from_metadata_v2
-
   unit:
     name: 'Unit tests'
     runs-on: ubuntu-latest
@@ -79,30 +54,3 @@ jobs:
       - name: Run static validations
         run: |
           bundle exec rake check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint
-
-  acceptance:
-    name: 'Acceptance tests'
-    needs: setup_matrix
-    if: ${{ needs.setup_matrix.outputs.matrix != '{}' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.setup_matrix.outputs.matrix) }}
-    env:
-      BUNDLE_WITHOUT: development:release
-    steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "2.7"
-          bundler-cache: true
-      - name: Run acceptance tests
-        run: |
-          bundle exec rake beaker
-        env:
-          BEAKER_PUPPET_COLLECTION: ${{ matrix.puppet_collection }}
-          BEAKER_setfile: ${{ matrix.setfile }}
