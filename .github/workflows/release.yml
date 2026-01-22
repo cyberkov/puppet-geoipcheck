@@ -6,10 +6,15 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: 'Deploy to Puppet Forge'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
