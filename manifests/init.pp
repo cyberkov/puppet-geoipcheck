@@ -1,37 +1,38 @@
-# == Class: geoipcheck
+# @summary Restricts SSH logins via GeoIP location checking
 #
-# Full description of class geoipcheck here.
+# This class configures GeoIP-based access control for SSH connections,
+# allowing access only from specified countries using TCP wrappers.
 #
-# === Parameters
+# @param countries
+#   Array of ISO 3166-1 alpha-2 country codes that should be allowed SSH access
 #
-# Document parameters here.
+# @param manage_dependencies
+#   Whether to manage the wget package dependency
 #
-# [*countries*]
-#   Array of countries that should be accepted to login
+# @example Basic usage with default countries (Austria and UK)
+#   include geoipcheck
 #
-# === Examples
+# @example Allow access from specific countries
+#   class { 'geoipcheck':
+#     countries => ['US', 'CA', 'GB'],
+#   }
 #
-#  class { 'geoipcheck': }
-#
-# === Authors
-#
-# Hannes Schaller <admin@cyberkov.at>
-#
-# === Copyright
-#
-# Copyright 2015 Hannes Schaller
+# @example Disable wget package management
+#   class { 'geoipcheck':
+#     countries           => ['DE', 'FR'],
+#     manage_dependencies => false,
+#   }
 #
 class geoipcheck (
-  Array $countries = [ 'AT', 'UK' ],
-  Boolean $manage_dependencies = true
-){
-
-  package {['geoip-bin', 'geoip-database']:
-    ensure => present
+  Array[String[2,2]] $countries = ['AT', 'UK'],
+  Boolean $manage_dependencies = true,
+) {
+  package { ['geoip-bin', 'geoip-database']:
+    ensure => present,
   }
 
   if $manage_dependencies {
-    ensure_packages( 'wget' )
+    ensure_packages(['wget'])
   }
 
   file { 'geoip_dir':
@@ -43,7 +44,7 @@ class geoipcheck (
   }
 
   file { '/usr/local/geoip/check':
-    ensure  => present,
+    ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
@@ -52,7 +53,7 @@ class geoipcheck (
   }
 
   file { '/usr/local/geoip/update':
-    ensure  => present,
+    ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
@@ -76,6 +77,4 @@ class geoipcheck (
     line    => 'sshd: ALL',
     require => File_line['hosts.allow'],
   }
-
-
 }

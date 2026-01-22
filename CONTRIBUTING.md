@@ -1,92 +1,107 @@
-This module has grown over time based on a range of contributions from
-people using it. If you follow these contributing guidelines your patch
-will likely make it into a release a little quicker.
+# Contributing to puppet-geoipcheck
 
+Thank you for contributing to this Puppet module! This module follows the [Voxpupuli](https://voxpupuli.org) coding standards.
 
-## Contributing
+## Getting Started
 
-1. Fork the repo.
-
-2. Run the tests. We only take pull requests with passing tests, and
-   it's great to know that you have a clean slate.
-
-3. Add a test for your change. Only refactoring and documentation
-   changes require no new tests. If you are adding functionality
-   or fixing a bug, please add a test.
-
-4. Make the test pass.
-
-5. Push to your fork and submit a pull request.
-
+1. Fork the repository
+2. Create a feature branch from `main`
+3. Run the tests to ensure you have a clean baseline
+4. Make your changes
+5. Add tests for your changes
+6. Ensure all tests pass
+7. Submit a pull request
 
 ## Dependencies
 
-The testing and development tools have a bunch of dependencies,
-all managed by [Bundler](http://bundler.io/) according to the
-[Puppet support matrix](http://docs.puppetlabs.com/guides/platforms.html#ruby-versions).
+All testing and development dependencies are managed by [Bundler](http://bundler.io/).
 
-By default the tests use a baseline version of Puppet.
+Install dependencies:
 
-If you have Ruby 2.x or want a specific version of Puppet,
-you must set an environment variable such as:
+```bash
+bundle install
+```
 
-    export PUPPET_VERSION="~> 3.2.0"
+## Testing
 
-Install the dependencies like so...
+### Running All Tests
 
-    bundle install
+To run all static validations and unit tests:
 
-## Syntax and style
+```bash
+bundle exec rake test
+```
 
-The test suite will run [Puppet Lint](http://puppet-lint.com/) and
-[Puppet Syntax](https://github.com/gds-operations/puppet-syntax) to
-check various syntax and style things. You can run these locally with:
+### Syntax and Style Checks
 
-    bundle exec rake lint
-    bundle exec rake syntax
+The test suite runs several linters and validators:
 
-## Running the unit tests
+- Puppet Lint
+- Puppet Syntax
+- RuboCop
+- Metadata linter
 
-The unit test suite covers most of the code, as mentioned above please
-add tests if you're adding new functionality. If you've not used
-[rspec-puppet](http://rspec-puppet.com/) before then feel free to ask
-about how best to test your new feature. Running the test suite is done
-with:
+Run them individually or all together:
 
-    bundle exec rake spec
+```bash
+bundle exec rake syntax        # Check Puppet syntax
+bundle exec rake lint          # Run puppet-lint
+bundle exec rake rubocop       # Check Ruby style
+bundle exec rake metadata_lint # Validate metadata.json
+```
 
-Note also you can run the syntax, style and unit tests in one go with:
+### Unit Tests
 
-    bundle exec rake test
+Unit tests use [rspec-puppet](http://rspec-puppet.com/):
 
-### Automatically run the tests
+```bash
+bundle exec rake spec
+```
 
-During development of your puppet module you might want to run your unit
-tests a couple of times. You can use the following command to automate
-running the unit tests on every change made in the manifests folder.
+To run tests in parallel:
 
-    bundle exec guard
+```bash
+bundle exec rake parallel_spec
+```
 
-## Integration tests
+### Acceptance Tests
 
-The unit tests just check the code runs, not that it does exactly what
-we want on a real machine. For that we're using
-[Beaker](https://github.com/puppetlabs/beaker).
+Acceptance tests use [Beaker](https://github.com/voxpupuli/beaker):
 
-Beaker fires up a new virtual machine (using Vagrant) and runs a series of
-simple tests against it after applying the module. You can run our
-Beaker tests with:
+```bash
+bundle exec rake beaker
+```
 
-    bundle exec rake acceptance
+## Code Style
 
-This will use the host described in `spec/acceptance/nodeset/default.yml`
-by default. To run against another host, set the `BEAKER_set` environment
-variable to the name of a host described by a `.yml` file in the
-`nodeset` directory. For example, to run against CentOS 6.4:
+This module follows:
+- [Puppet Language Style Guide](https://puppet.com/docs/puppet/latest/style_guide.html)
+- [Voxpupuli coding guidelines](https://voxpupuli.org/docs/reviewing_pr/)
+- RuboCop rules for Ruby code
 
-    BEAKER_set=centos-64-x64 bundle exec rake acceptance
+## Documentation
 
-If you don't want to have to recreate the virtual machine every time you
-can use `BEAKER_destroy=no` and `BEAKER_provision=no`. On the first run you will
-at least need `BEAKER_provision` set to yes (the default). The Vagrantfile
-for the created virtual machines will be in `.vagrant/beaker_vagrant_files`.
+- Use [Puppet Strings](https://puppet.com/docs/puppet/latest/puppet_strings.html) format for documenting classes and defined types
+- Update README.md for any user-facing changes
+- Update CHANGELOG.md following [Keep a Changelog](https://keepachangelog.com/) format
+
+## Pull Requests
+
+- Keep pull requests focused on a single feature or fix
+- Include tests for new functionality
+- Ensure CI checks pass
+- Update documentation as needed
+- Reference related issues in the PR description
+
+## Commit Messages
+
+Write clear, descriptive commit messages that explain what and why, not just what.
+
+## Need Help?
+
+If you have questions or need guidance:
+- Open an issue for discussion
+- Check [Voxpupuli documentation](https://voxpupuli.org/docs/)
+- Reach out to maintainers
+
+Thank you for your contributions!
